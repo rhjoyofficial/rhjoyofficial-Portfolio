@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /tmp/shots)",
+      "Bash(npx --yes playwright screenshot --browser=chromium --color-scheme=dark --wait-for-timeout=2500 --full-page http://localhost:3003/ /tmp/shots/home-dark.png)",
+      "Bash(cd \"d:/WORK/MY_WORK/Portfolio\")",
+      "Bash(npx --yes -p playwright node __TRACKED_VAR__/verify.js)",
+      "Bash(node verify.js)",
+      "PowerShell(Get-Command gh -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-Command git -ErrorAction SilentlyContinue)",
+      "PowerShell(winget install --id GitHub.cli --silent --accept-package-agreements --accept-source-agreements 2>&1)"
+    ]
+  }
+}
