@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { MobileNav } from "@/components/layout/MobileNav";
 
 const NAV_LINKS = [
   { href: "/about", label: "About" },
@@ -13,13 +14,11 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="font-mono text-lg font-bold text-primary"
-        >
+        <Link href="/" className="font-mono text-lg font-bold text-primary">
           rhjoy.
         </Link>
 
+        {/* Desktop nav */}
         <div className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link) => (
             <Link
@@ -36,10 +35,11 @@ export function Navbar() {
           <ThemeToggle />
           <Link
             href="/contact"
-            className="hidden rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover sm:inline-block"
+            className="hidden rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-hover sm:inline-block md:inline-block"
           >
             Hire Me
           </Link>
+          <MobileNav />
         </div>
       </nav>
     </header>
