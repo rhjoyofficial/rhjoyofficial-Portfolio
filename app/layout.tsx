@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { CustomCursor } from "@/components/ui/CustomCursor";
 import { personSchema, websiteSchema } from "@/lib/schemas";
 import "./globals.css";
 
@@ -40,13 +42,11 @@ export const metadata: Metadata = {
     siteName: "Rakibul Hasan Joy",
     title: "Rakibul Hasan Joy — Full Stack Developer & AI Automation Engineer",
     description: "I build web apps and AI systems that make businesses run faster.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Rakibul Hasan Joy — Full Stack Developer & AI Automation Engineer",
     description: "I build web apps and AI systems that make businesses run faster.",
-    images: ["/og-image.png"],
   },
   robots: { index: true, follow: true },
   metadataBase: new URL("https://rakibulhasanjoy.com"),
@@ -63,7 +63,8 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
+        <CustomCursor />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema()) }}
@@ -82,6 +83,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

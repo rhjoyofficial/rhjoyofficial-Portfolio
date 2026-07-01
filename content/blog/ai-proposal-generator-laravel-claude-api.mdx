@@ -1,0 +1,198 @@
+---
+title: "How I Built an AI Proposal Generator with Laravel and Claude API"
+description: "A step-by-step walkthrough of building a production-ready AI proposal generator — from prompt engineering to streaming responses in a Laravel + React app."
+category: "Tutorial"
+date: "2026-06-20"
+readTime: "8 min read"
+published: true
+---
+
+Every freelancer knows the pain: a new lead comes in, you spend 30–60 minutes writing a custom proposal, and half the time they ghost you anyway. I wanted to fix that for my own workflow and ended up building **InvoiceAI** — an AI-powered proposal and invoice generator built with Laravel 13, React, and Anthropic's Claude API.
+
+Here's exactly how I built it.
+
+## The Goal
+
+The system needed to:
+
+1. Accept a project brief (client name, project type, budget range, deadline)
+2. Generate a professional proposal with sections for scope, deliverables, timeline, and pricing
+3. Stream the response in real time so users see text appearing as it's generated
+4. Export the final proposal as a PDF
+
+## Stack Overview
+
+- **Backend:** Laravel 13 (PHP 8.3)
+- **Frontend:** React 18 with TypeScript
+- **AI:** Claude API (claude-sonnet-4-6)
+- **Streaming:** Server-Sent Events (SSE)
+- **PDF export:** Laravel DomPDF
+
+## Step 1: Setting Up the Claude API in Laravel
+
+First, install the Anthropic PHP SDK (or call the API directly — I chose direct HTTP calls for flexibility):
+
+```php
+// app/Services/ProposalService.php
+
+class ProposalService
+{
+    private string $apiKey;
+    private string $model = 'claude-sonnet-4-6';
+
+    public function __construct()
+    {
+        $this->apiKey = config('services.anthropic.key');
+    }
+
+    public function stream(string $prompt): Generator
+    {
+        $response = Http::withHeaders([
+            'x-api-key' => $this->apiKey,
+            'anthropic-version' => '2023-06-01',
+            'content-type' => 'application/json',
+        ])->send('POST', 'https://api.anthropic.com/v1/messages', [
+            'json' => [
+                'model' => $this->model,
+                'max_tokens' => 2048,
+                'stream' => true,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt],
+                ],
+            ],
+            'stream' => true,
+        ]);
+
+        foreach ($response->toPsrResponse()->getBody() as $chunk) {
+            yield $chunk;
+        }
+    }
+}
+```
+
+## Step 2: Prompt Engineering
+
+The quality of the output depends entirely on the prompt. I spent about two days iterating on this. The final system prompt:
+
+```
+You are an expert freelance proposal writer. Write a professional project proposal
+based on the brief below.
+
+Structure:
+1. Executive Summary (2–3 sentences)
+2. Project Scope & Deliverables (bulleted list)
+3. Timeline (week-by-week breakdown)
+4. Investment (price with payment milestones)
+5. Why Work With Me (3 bullet points)
+6. Next Steps
+
+Tone: professional but warm. Client-focused. No jargon.
+Brief: {brief}
+```
+
+The key insight was putting "Client-focused" in the tone instruction. Without it, Claude tended to over-explain technical details the client doesn't care about.
+
+## Step 3: Streaming the Response
+
+SSE is the cleanest way to stream AI responses to the browser. Here's the Laravel controller:
+
+```php
+// app/Http/Controllers/ProposalController.php
+
+public function generate(Request $request): StreamedResponse
+{
+    $brief = $request->validate([
+        'client_name' => 'required|string',
+        'project_type' => 'required|string',
+        'budget' => 'required|string',
+        'deadline' => 'required|string',
+        'details' => 'required|string|max:1000',
+    ]);
+
+    $prompt = $this->buildPrompt($brief);
+
+    return response()->stream(function () use ($prompt) {
+        foreach ($this->proposalService->stream($prompt) as $chunk) {
+            // Parse SSE data lines from Claude's stream
+            foreach (explode("\n", $chunk) as $line) {
+                if (str_starts_with($line, 'data: ')) {
+                    $data = json_decode(substr($line, 6), true);
+                    if (isset($data['delta']['text'])) {
+                        echo 'data: ' . json_encode(['text' => $data['delta']['text']]) . "\n\n";
+                        ob_flush();
+                        flush();
+                    }
+                }
+            }
+        }
+        echo "data: [DONE]\n\n";
+    }, 200, [
+        'Content-Type' => 'text/event-stream',
+        'Cache-Control' => 'no-cache',
+        'X-Accel-Buffering' => 'no',
+    ]);
+}
+```
+
+## Step 4: React Frontend
+
+On the React side, I used the `EventSource` API to consume the SSE stream:
+
+```tsx
+async function generateProposal(formData: ProposalForm) {
+  setIsGenerating(true);
+  setOutput('');
+
+  const response = await fetch('/api/proposals/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(formData),
+  });
+
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const text = decoder.decode(value);
+    const lines = text.split('\n').filter(l => l.startsWith('data: '));
+
+    for (const line of lines) {
+      const data = JSON.parse(line.replace('data: ', ''));
+      if (data === '[DONE]') break;
+      setOutput(prev => prev + data.text);
+    }
+  }
+
+  setIsGenerating(false);
+}
+```
+
+## Step 5: PDF Export
+
+Once the proposal is approved, users click "Export PDF." I pipe the rendered HTML through Laravel DomPDF:
+
+```php
+public function export(string $id): Response
+{
+    $proposal = Proposal::findOrFail($id);
+    $pdf = Pdf::loadView('proposals.pdf', ['proposal' => $proposal]);
+    return $pdf->download("proposal-{$proposal->client_name}.pdf");
+}
+```
+
+## Results
+
+The tool reduced my proposal writing time from ~45 minutes to under 5 minutes per project. The AI-generated first draft is roughly 80% there — I tweak the pricing section and add project-specific details, then export.
+
+Total build time: about 3 days of focused work.
+
+## What I'd Do Differently
+
+- **Caching:** Store the generated proposals in a database immediately so users can revisit them
+- **Templates:** Let users choose between proposal styles (formal, casual, technical)
+- **Fine-tuning:** Collect approved proposals over time and use them for few-shot examples
+
+The full source is available on my GitHub. If you want to see it live, check out the [InvoiceAI demo](/projects/invoice-ai).

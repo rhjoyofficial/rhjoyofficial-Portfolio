@@ -1,0 +1,99 @@
+---
+title: "How to Hire a Laravel Developer: What to Look For"
+description: "What separates a good Laravel developer from a great one — and the questions you should ask before signing a contract."
+category: "Hiring"
+date: "2026-04-10"
+readTime: "5 min read"
+published: true
+---
+
+Hiring a Laravel developer on Upwork or Fiverr is easy. Hiring a *good* Laravel developer is not. After years of building PHP applications and talking to dozens of clients who've had bad experiences with previous developers, I've noticed the same mistakes get made over and over.
+
+Here's what actually separates good from great — and the questions that will surface it in any hiring process.
+
+## The Red Flags (That Most People Miss)
+
+### 1. They Can't Explain Their Database Design Decisions
+
+Ask any candidate: "Walk me through how you'd design the database for a multi-tenant SaaS application."
+
+A junior developer will describe tables. A senior developer will talk about tradeoffs — separate databases per tenant vs. shared database with tenant ID, how that affects query performance, backup complexity, and the migration strategy when you need to scale.
+
+If they can't discuss tradeoffs, they're not senior — regardless of their claimed years of experience.
+
+### 2. Their GitHub Has No Real Projects
+
+Portfolios full of tutorial projects (blog apps, to-do lists) don't tell you anything. Look for:
+- Projects with real users or live URLs
+- Non-trivial architecture (not just CRUD)
+- Evidence of dealing with real-world problems (performance optimization, security, API design)
+- Commit history that shows how they work over time (not just a single big commit)
+
+### 3. They Can't Talk About Security
+
+Laravel does a lot of security heavy lifting out of the box, but it doesn't protect you from everything. Ask:
+
+- "How do you protect against SQL injection in Laravel?" (Eloquent ORM + parameterized queries — but they should also mention when raw queries require extra care)
+- "How do you handle file uploads securely?"
+- "What do you do with sensitive data in environment variables?"
+
+Vague answers here should worry you.
+
+## The Questions to Ask
+
+### Technical Questions
+
+**"How does Laravel's service container work, and when do you use it?"**
+
+This is a filter question. Anyone can use Eloquent. Understanding the container means they understand how Laravel's architecture works at a deeper level.
+
+**"What's your approach to database performance in a Laravel app with 1M+ rows?"**
+
+Good answers include: proper indexing, eager loading to prevent N+1, query caching, pagination (not loading all records), database query analysis with `EXPLAIN`.
+
+**"How do you handle background jobs that fail?"**
+
+They should mention: queue drivers, retry logic, failed job tables, monitoring with Horizon or a similar tool, and alerting.
+
+### Process Questions
+
+**"How do you handle scope changes from a client mid-project?"**
+
+This reveals whether they have a professional process or just say yes to everything and disappear.
+
+**"Show me a project where something went wrong. What happened and how did you handle it?"**
+
+Everyone has had a production incident. How they talk about it tells you more than a portfolio does.
+
+**"What does your deployment process look like?"**
+
+They should have an answer. "I FTP the files" is a red flag in 2026. CI/CD, Git-based deployment, environment configuration management, migration strategy — these are table stakes.
+
+## Green Flags to Look For
+
+- **They ask clarifying questions** before proposing solutions. Good developers don't jump straight to code.
+- **They mention testing** without being prompted. Even if it's just basic feature tests.
+- **They push back thoughtfully.** A developer who agrees with everything you say isn't thinking critically about your project.
+- **They have opinions about tools.** A developer with no strong preferences for anything hasn't thought deeply about the tradeoffs.
+
+## What to Pay
+
+Rates vary significantly by location and experience. On Upwork in 2026:
+
+- **Bangladesh/South Asia:** $25–65/hour for experienced developers
+- **Eastern Europe:** $40–80/hour
+- **Western Europe/North America:** $80–150/hour
+
+Cheap isn't always bad — the market rate in different regions reflects cost of living, not quality. I've seen excellent $30/hour work from South Asian developers and terrible $120/hour work from Western agencies.
+
+Focus on: demonstrated results, communication quality, and whether they ask good questions.
+
+## One More Thing
+
+The best indicator of how a developer will perform is how they communicate *before* you hire them. Do they respond quickly? Are their messages clear and specific? Do they understand your brief?
+
+Communication is half the job. Code quality matters, but a brilliant developer who disappears for days and sends cryptic status updates will cost you more than a solid developer with clear, consistent communication.
+
+---
+
+*I'm available for Laravel development work and happy to answer questions about your project before we talk budget. [Let's connect](/contact).*

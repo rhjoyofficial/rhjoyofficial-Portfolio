@@ -55,3 +55,22 @@ export function faqSchema() {
     })),
   };
 }
+
+export function articleSchema(post: {
+  title: string;
+  description: string;
+  slug: string;
+  date: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    datePublished: post.date,
+    author: { "@id": `${SITE_URL}/#person` },
+    publisher: { "@id": `${SITE_URL}/#person` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${post.slug}` },
+  };
+}

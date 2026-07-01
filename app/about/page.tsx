@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { SOCIAL_LINKS } from "@/lib/social-links";
+import { ProfilePhoto } from "@/components/ui/ProfilePhoto";
 
 export const metadata: Metadata = {
   title: "About",
@@ -51,9 +52,7 @@ export default function AboutPage() {
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[200px_1fr] lg:items-start">
         <AnimatedSection delay={0.1}>
-          <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-2xl border border-border bg-gradient-to-br from-primary/20 to-violet-500/20 font-mono text-5xl font-bold text-primary lg:mx-0">
-            RJ
-          </div>
+          <ProfilePhoto size={192} className="mx-auto lg:mx-0" priority />
           <div className="mt-6 flex justify-center gap-3 lg:justify-start">
             {SOCIAL_LINKS.map(({ href, label, icon: Icon }) => (
               <a

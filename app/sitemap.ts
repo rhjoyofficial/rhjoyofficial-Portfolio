@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { PROJECTS } from "@/data/projects";
+import { getAllPosts } from "@/lib/blog";
 
 const BASE = "https://rakibulhasanjoy.com";
 
@@ -20,5 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly" as const,
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  const blogRoutes = getAllPosts().map((p) => ({
+    url: `${BASE}/blog/${p.slug}`,
+    priority: 0.75,
+    changeFrequency: "monthly" as const,
+    lastModified: new Date(p.date),
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...blogRoutes];
 }

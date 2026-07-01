@@ -1,0 +1,200 @@
+---
+title: "Full Stack Laravel + React: My Development Process Explained"
+description: "How I structure, build, and ship Laravel + React projects — from API design to state management to deployment. The opinionated process I've refined over 3 years."
+category: "Development"
+date: "2026-05-15"
+readTime: "5 min read"
+published: true
+---
+
+After three years of building full-stack applications with Laravel and React, I've settled on an opinionated process that lets me ship production-quality software quickly without cutting corners.
+
+Here's exactly how I approach a new project from day one.
+
+## Phase 1: Database First
+
+Before writing a single line of PHP or JavaScript, I model the database. This sounds old-fashioned, but it forces you to think through the business logic before you get lost in implementation details.
+
+I use a simple spreadsheet or Figma table to map out:
+- Tables and relationships
+- Which fields are nullable vs required
+- Indexes for frequently queried columns
+- Soft-delete requirements
+
+Only when the schema feels right do I write the migrations.
+
+```php
+// Clean, explicit migrations
+Schema::create('projects', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('client_id')->constrained()->cascadeOnDelete();
+    $table->string('title');
+    $table->text('description')->nullable();
+    $table->enum('status', ['draft', 'active', 'completed', 'archived'])->default('draft');
+    $table->decimal('budget', 10, 2)->nullable();
+    $table->date('deadline')->nullable();
+    $table->timestamps();
+    $table->softDeletes();
+    
+    $table->index(['client_id', 'status']);
+});
+```
+
+## Phase 2: API Design
+
+Next, I design the API contract before implementing it. I write out the endpoints, request/response shapes, and authentication requirements.
+
+```
+POST   /api/auth/login
+GET    /api/projects                 (paginated, filterable)
+POST   /api/projects
+GET    /api/projects/{id}
+PUT    /api/projects/{id}
+DELETE /api/projects/{id}
+```
+
+I use Laravel's API Resources to ensure consistent response shapes:
+
+```php
+class ProjectResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'status' => $this->status,
+            'budget' => $this->budget,
+            'deadline' => $this->deadline?->format('Y-m-d'),
+            'client' => new ClientResource($this->whenLoaded('client')),
+            'created_at' => $this->created_at->toISOString(),
+        ];
+    }
+}
+```
+
+The `whenLoaded` pattern prevents N+1 queries without requiring the resource to always eager-load relations.
+
+## Phase 3: Laravel Backend
+
+With the schema and API contract locked in, I build the Laravel backend in this order:
+
+1. **Models** — Eloquent relationships, casts, scopes
+2. **Policies** — Authorization logic (who can do what)
+3. **Form Requests** — Validation rules, authorization
+4. **Controllers** — Thin controllers that delegate to services
+5. **Services** — Business logic lives here, not in controllers
+6. **Tests** — Feature tests for each endpoint
+
+The controller stays thin:
+
+```php
+class ProjectController extends Controller
+{
+    public function store(StoreProjectRequest $request): ProjectResource
+    {
+        $project = $this->projectService->create(
+            $request->validated(),
+            $request->user()
+        );
+
+        return new ProjectResource($project);
+    }
+}
+```
+
+## Phase 4: React Frontend
+
+I bootstrap the React app with Vite (or Next.js if SSR/SEO matters). My standard setup:
+
+- **TanStack Query** — server state management, caching, background refetching
+- **Zustand** — client-only state (UI state, modals, etc.)
+- **Zod** — runtime schema validation for API responses
+- **React Hook Form** — form management with Zod resolver
+
+The pattern I use for API calls:
+
+```typescript
+// hooks/useProjects.ts
+export function useProjects(filters?: ProjectFilters) {
+  return useQuery({
+    queryKey: ['projects', filters],
+    queryFn: () => api.get<PaginatedResponse<Project>>('/projects', { params: filters }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (data: CreateProjectInput) => api.post<Project>('/projects', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+}
+```
+
+## Phase 5: Authentication
+
+I use Laravel Sanctum for SPA authentication. It handles CSRF protection, session-based auth for same-domain SPAs, and token-based auth for mobile clients in one package.
+
+The React side stores the user in Zustand and uses an `AuthGuard` component for protected routes.
+
+## Phase 6: Testing
+
+I write two types of tests:
+
+**Feature tests (Laravel):** Test the HTTP layer end-to-end, including authentication, validation, and database state.
+
+```php
+it('creates a project', function () {
+    $client = Client::factory()->create();
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->postJson('/api/projects', [
+            'title' => 'New Website',
+            'client_id' => $client->id,
+            'budget' => 5000,
+        ]);
+
+    $response->assertCreated()
+        ->assertJsonPath('data.title', 'New Website');
+    
+    $this->assertDatabaseHas('projects', ['title' => 'New Website']);
+});
+```
+
+**Component tests (React):** Test complex UI logic using Vitest + React Testing Library. I don't aim for 100% coverage — I test the things that have real business value and are likely to break.
+
+## Phase 7: Deployment
+
+My standard deployment stack:
+- **Hostinger VPS** (Ubuntu 22.04) for Laravel
+- **Vercel** for React frontend (if standalone)
+- **GitHub Actions** for CI/CD
+- **Laravel Forge** or custom deploy script
+
+The deploy script:
+```bash
+#!/bin/bash
+git pull origin main
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan queue:restart
+```
+
+## What Makes This Process Work
+
+The discipline is in the order. Skipping straight to code before the schema is set leads to painful migrations and restructuring later. Designing the API contract before implementation means the React team (or future me) doesn't hit surprises.
+
+Most importantly: **ship incrementally**. I deploy to a staging environment after each major phase, not just at the end.
+
+---
+
+*Working on a Laravel + React project? I'm available for freelance work and consultation. [Get in touch](/contact).*

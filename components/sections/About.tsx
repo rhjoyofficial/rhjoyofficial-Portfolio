@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
+import { ProfilePhoto } from "@/components/ui/ProfilePhoto";
 
 const DIFFERENTIATORS = [
   "Full stack AND automation — I don’t hand off the AI piece to someone else.",
@@ -12,9 +13,7 @@ export function About() {
     <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
       <AnimatedSection>
         <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:items-start">
-          <div className="mx-auto flex h-56 w-56 items-center justify-center rounded-2xl border border-border bg-gradient-to-br from-primary/20 to-violet-500/20 font-mono text-5xl font-bold text-primary lg:mx-0">
-            RJ
-          </div>
+          <ProfilePhoto size={224} className="mx-auto lg:mx-0" priority />
 
           <div>
             <h2 className="text-3xl font-bold text-foreground">About Me</h2>
