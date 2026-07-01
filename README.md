@@ -29,6 +29,7 @@ https://rhjoy.endbrackets.com
 | `data/` | Projects, skills, services, FAQ data |
 | `public/` | Public images and static assets |
 | `server.js` | Startup file for the hosting Node.js app |
+| `next.config.js` | Next.js config; JavaScript is used so cPanel does not need TypeScript at runtime |
 | `package.json` | Scripts and dependencies |
 
 ## Image Files To Add
@@ -235,6 +236,89 @@ npm run build
 ```
 
 After that, restart the Node.js app from the hosting panel.
+
+## No-Terminal Upload Workflow
+
+This is the preferred workflow for this shared hosting server because building on the server can fail from limited CPU/thread resources.
+
+### 1. Build Locally
+
+On your computer:
+
+```bash
+npm install
+npm run build
+```
+
+### 2. Create A Deployment Zip
+
+Zip these files and folders:
+
+```text
+.next/
+app/
+components/
+content/
+data/
+lib/
+public/
+server.js
+next.config.js
+package.json
+package-lock.json
+tsconfig.json
+postcss.config.mjs
+eslint.config.mjs
+README.md
+```
+
+Do not include:
+
+```text
+node_modules/
+.git/
+old zip files
+```
+
+### 3. Upload And Extract
+
+Upload the zip to:
+
+```text
+rhjoy.endbrackets.com
+```
+
+Extract it so the files are directly inside the domain folder:
+
+```text
+rhjoy.endbrackets.com/server.js
+rhjoy.endbrackets.com/package.json
+rhjoy.endbrackets.com/next.config.js
+rhjoy.endbrackets.com/.next/
+```
+
+Avoid this wrong nested structure:
+
+```text
+rhjoy.endbrackets.com/rhjoyofficial-Portfolio/server.js
+```
+
+### 4. Use The Node.js Panel
+
+In the Node.js panel:
+
+```text
+Application startup file: server.js
+```
+
+Then click:
+
+```text
+Run NPM Install
+Restart
+```
+
+You do not need to run `npm run build` on cPanel when `.next/` was built locally and uploaded.
 
 ## Contact Form Setup
 
