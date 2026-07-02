@@ -102,7 +102,7 @@ export default function OgImage() {
             lineHeight: 1.5,
           }}
         >
-          I build web apps and AI systems that make businesses run faster.
+          Code that ships. Automation that scales. That&apos;s the job.
         </div>
 
         {/* Bottom badges */}

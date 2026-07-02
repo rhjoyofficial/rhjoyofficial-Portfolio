@@ -45,9 +45,11 @@ export function Skills() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.1}>
-          <div className="mt-8 grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             {activeSkills.map((skill) => (
-              <SkillIcon key={skill.name} iconKey={skill.icon} name={skill.name} />
+              <div key={skill.name} className="w-24 sm:w-28">
+                <SkillIcon iconKey={skill.icon} name={skill.name} />
+              </div>
             ))}
           </div>
         </AnimatedSection>

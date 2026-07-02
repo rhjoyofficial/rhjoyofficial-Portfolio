@@ -19,7 +19,7 @@ export function Footer() {
               rhjoy.
             </Link>
             <p className="mt-3 text-sm text-muted">
-              I build web apps and AI systems that make businesses run faster.
+              Code that ships. Automation that scales. That&apos;s the job.
             </p>
           </div>
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Download } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { ProfilePhoto } from "@/components/ui/ProfilePhoto";
 
@@ -35,12 +36,21 @@ export function About() {
               ))}
             </ul>
 
-            <Link
-              href="/about"
-              className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
-            >
-              Read full story →
-            </Link>
+            <div className="mt-6 flex flex-wrap items-center gap-5">
+              <Link
+                href="/about"
+                className="inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
+              >
+                Read full story →
+              </Link>
+              <a
+                href="/resume.pdf"
+                download="Rakibul-Hasan-Joy-CV.pdf"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground/80 transition-colors hover:text-foreground"
+              >
+                <Download size={14} /> Download CV
+              </a>
+            </div>
           </div>
         </div>
       </AnimatedSection>

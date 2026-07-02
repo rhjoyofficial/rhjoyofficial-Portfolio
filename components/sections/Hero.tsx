@@ -27,7 +27,7 @@ export function Hero() {
           </p>
 
           <p className="mt-5 max-w-lg text-lg text-muted">
-            I build web apps and AI systems that make businesses run faster.
+            Code that ships. Automation that scales. That&apos;s the job.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">

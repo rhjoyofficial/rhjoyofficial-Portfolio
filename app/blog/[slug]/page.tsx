@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
@@ -67,6 +68,17 @@ export default async function BlogPostPage({ params }: Props) {
           <span>{formatDate(meta.date)}</span>
           <span>·</span>
           <span>{meta.readTime}</span>
+        </div>
+
+        <div className="relative mt-8 h-56 w-full overflow-hidden rounded-2xl border border-border sm:h-80">
+          <Image
+            src={`/blog/${meta.slug}/opengraph-image`}
+            alt={meta.title}
+            fill
+            sizes="(min-width: 1024px) 768px, 100vw"
+            className="object-cover"
+            priority
+          />
         </div>
       </AnimatedSection>
 

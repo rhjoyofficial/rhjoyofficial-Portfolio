@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 import { PROJECTS } from "@/data/projects";
@@ -39,10 +40,21 @@ export default async function ProjectPage({ params }: Props) {
           ← All Projects
         </Link>
 
-        <div className="mt-4 flex h-64 items-center justify-center rounded-2xl border border-border bg-gradient-to-br from-primary/10 to-violet-500/10">
-          <span className="font-mono text-6xl font-bold text-primary/30">
-            {project.title.slice(0, 2).toUpperCase()}
-          </span>
+        <div className="relative mt-4 flex h-64 items-center justify-center overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-primary/10 to-violet-500/10">
+          {project.image ? (
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              sizes="(min-width: 1024px) 896px, 100vw"
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <span className="font-mono text-6xl font-bold text-primary/30">
+              {project.title.slice(0, 2).toUpperCase()}
+            </span>
+          )}
         </div>
 
         <div className="mt-8 flex flex-wrap items-start justify-between gap-4">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { FileText, Download } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/AnimatedSection";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 import { ProfilePhoto } from "@/components/ui/ProfilePhoto";
@@ -99,6 +100,21 @@ export default function AboutPage() {
             >
               Work With Me
             </Link>
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
+            >
+              <FileText size={16} /> View CV
+            </a>
+            <a
+              href="/resume.pdf"
+              download="Rakibul-Hasan-Joy-CV.pdf"
+              className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
+            >
+              <Download size={16} /> Download CV
+            </a>
             <Link
               href="/uses"
               className="rounded-lg border border-border px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-surface"
