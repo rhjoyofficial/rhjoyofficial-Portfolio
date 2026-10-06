@@ -33,12 +33,12 @@ export const metadata: Metadata = {
     "hire Laravel developer",
     "n8n automation",
   ],
-  authors: [{ name: "Rakibul Hasan Joy", url: "https://rakibulhasanjoy.com" }],
+  authors: [{ name: "Rakibul Hasan Joy", url: "https://rakibulhasanjoy.endbrackets.com" }],
   creator: "Rakibul Hasan Joy",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://rakibulhasanjoy.com",
+    url: "https://rakibulhasanjoy.endbrackets.com",
     siteName: "Rakibul Hasan Joy",
     title: "Rakibul Hasan Joy — Full Stack Developer & AI Automation Engineer",
     description: "Code that ships. Automation that scales. That's the job.",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     description: "Code that ships. Automation that scales. That's the job.",
   },
   robots: { index: true, follow: true },
-  metadataBase: new URL("https://rakibulhasanjoy.com"),
+  metadataBase: new URL("https://rakibulhasanjoy.endbrackets.com"),
 };
 
 export default function RootLayout({

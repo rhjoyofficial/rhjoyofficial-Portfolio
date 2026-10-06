@@ -1,6 +1,6 @@
 import { FAQ_ITEMS } from "@/data/faq";
 
-const SITE_URL = "https://rakibulhasanjoy.com";
+const SITE_URL = "https://rakibulhasanjoy.endbrackets.com";
 
 export function personSchema() {
   return {
