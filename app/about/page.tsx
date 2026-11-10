@@ -83,9 +83,8 @@ export default function AboutPage() {
               architecture, honest timelines, and shipping work that actually solves the problem.
             </p>
             <p className="mt-4 text-muted">
-              I work remotely with clients across North America, Europe, and Asia — async communication
-              is second nature to me. I reply fast, document my work, and stay available after
-              delivery.
+              I work from Bangladesh and I am open to remote work with teams in any time zone. I reply
+              fast, document my work, and stay available after delivery.
             </p>
             <p className="mt-4 text-muted">
               Outside of client work I run <strong>End Brackets</strong>, a small software studio

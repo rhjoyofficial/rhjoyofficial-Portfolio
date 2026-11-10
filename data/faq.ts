@@ -7,7 +7,7 @@ export const FAQ_ITEMS: FAQItem[] = [
   {
     question: "Where are you located and do you work with international clients?",
     answer:
-      "I'm based in Bangladesh (UTC+6) and work with clients globally. I've delivered projects for clients across North America, Europe, and the Middle East. Time zone differences are manageable with async communication and scheduled calls.",
+      "I'm based in Bangladesh (UTC+6) and open to remote work with international teams. Time zone differences are manageable with async communication and scheduled calls.",
   },
   {
     question: "What technologies do you specialize in?",

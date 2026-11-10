@@ -20,7 +20,7 @@ export function About() {
             <h2 className="text-3xl font-bold text-foreground">About Me</h2>
             <p className="mt-4 max-w-2xl text-muted">
               I’m a Full Stack Developer and AI Automation Engineer based in Bangladesh, with
-              3+ years building web applications for clients across the globe. My work spans
+              3+ years building and running production web applications for real businesses. My work spans
               Laravel and React on the development side, and Claude API and n8n on the
               automation side — so I don’t just build your app, I help it run itself. Whether
               you’re a startup founder, a remote team, or a local business owner, I turn what
